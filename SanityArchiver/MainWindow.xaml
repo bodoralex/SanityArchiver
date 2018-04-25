@@ -1,0 +1,38 @@
+﻿<Window x:Class="WpfApplication2.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Window1" Height="474" Width="781">
+    <Grid>
+        <ListView Margin="4,8,0,3" Name="listView1" HorizontalAlignment="Left" Width="367" BorderBrush="Black" ItemsSource="{Binding}" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding ImagePath}"/>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Ext" DisplayMemberBinding="{Binding Ext}" Width="Auto"/>
+                    <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Size}" Width="Auto"/>
+                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style>
+                    <EventSetter Event="ListViewItem.MouseDoubleClick" Handler="listViewItem_MouseDoubleClick"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <ComboBox Name="drives" HorizontalAlignment="Left" Margin="545,16,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="drives_SelectionChanged" >
+            <!--<ComboBox.Item>
+                <Style>
+                    <EventSetter Event="MouseUp" Handler="ComboBox_MouseUp"/>
+                </Style>
+            </ComboBox.Item>-->
+        </ComboBox>
+    </Grid>
+</Window>
