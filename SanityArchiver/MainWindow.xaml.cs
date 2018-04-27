@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,66 +23,46 @@ namespace WpfApplication2
     /// </summary>
     public partial class Window1 : Window
     {
+        ObservableCollection<DirectoryEntry> entries = new ObservableCollection<DirectoryEntry>();
+        string[] driveLetters = Directory.GetLogicalDrives();
+
         public Window1()
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(Window1_Loaded);
-            
         }
-
-        ObservableCollection<DirectoryEntry> entries = new ObservableCollection<DirectoryEntry>();
-        ObservableCollection<DirectoryEntry> subEntries = new ObservableCollection<DirectoryEntry>();
-        string[] driveLetters = Directory.GetLogicalDrives();
-
 
         void Window1_Loaded(object sender, RoutedEventArgs e)
         {
-
             InitializeDrives();
         }
 
         private void InitializeDrives()
         {
-            foreach (string s in Directory.GetLogicalDrives())
-            {
-                drives.Items.Add(s);
-            }
-            //drives.SelectedIndex = 0;
+            Array.ForEach(Directory.GetLogicalDrives(), (drive => drives.Items.Add(drive)));
+            drives.SelectedIndex = 0;
         }
 
-        void listViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void drives_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListViewItem item = e.Source as ListViewItem;
-
-            DirectoryEntry entry = item.DataContext as DirectoryEntry;
-
-            if (entry.Type == EntryType.Dir)
+            entries.Clear();
+            string driveLetter = e.AddedItems[0].ToString();
+            if (!string.IsNullOrEmpty(driveLetter))
             {
-                subEntries.Clear();
-
-                foreach (string s in Directory.GetDirectories(entry.Fullpath))
+                foreach (var entry in Directory.GetFileSystemEntries(driveLetter))
                 {
-                    DirectoryInfo dir = new DirectoryInfo(s);
-                    DirectoryEntry d = new DirectoryEntry(
-                        dir.Name, dir.FullName, "<Folder>", "<DIR>",
-                        Directory.GetLastWriteTime(s),
-                        "Images/folder.gif", EntryType.Dir);
-                    subEntries.Add(d);
-                }
-                foreach (string f in Directory.GetFiles(entry.Fullpath))
-                {
-                    FileInfo file = new FileInfo(f);
-                    DirectoryEntry d = new DirectoryEntry(
-                        file.Name, file.FullName, file.Extension, file.Length.ToString(),
-                        file.LastWriteTime,
-                        "Images/file.gif", EntryType.File);
-                    subEntries.Add(d);
-                }
+                    FileInfo file = new FileInfo(entry);
+                    bool isDirectory = file.Attributes.HasFlag(FileAttributes.Directory);
+  
+                    DirectoryEntry directoryEntry = new DirectoryEntry(file.Name, file.FullName,
+                        isDirectory ? "dir" : file.Extension, isDirectory ? "" : file.Length / 1024 / 1024 + " MB",
+                        file.LastAccessTimeUtc, isDirectory ? EntryType.Dir : EntryType.File);
 
-                //listview2.datacontext = subentries;
+                    entries.Add(directoryEntry);
+                }
+                listView1.DataContext = entries;
             }
         }
-       
 
         public enum EntryType
         {
@@ -96,67 +77,29 @@ namespace WpfApplication2
             private string _ext;
             private string _size;
             private DateTime _date;
-            private string _imagepath;
             private EntryType _type;
 
-            public DirectoryEntry(string name, string fullname, string ext, string size, DateTime date, string imagepath, EntryType type)
+
+            public DirectoryEntry(string name, string fullname, string ext, string size, DateTime date, EntryType type)
+                : this(name, fullname, ext, size, date)
             {
-                _name = name;
-                _fullpath = fullname;
-                _ext = ext;
-                _size = size;
-                _date = date;
-                _imagepath = imagepath;
-                _type = type;
+                Type = type;
+            }
+            public DirectoryEntry(string name, string fullname, string ext, string size, DateTime date)
+            {
+                Name = name;
+                Fullpath = fullname;
+                Ext = ext;
+                Size = size;
+                Date = date;
             }
 
-            public string Name
-            {
-                get { return _name; }
-                set { _name = value; }
-            }
-
-            public string Ext
-            {
-                get { return _ext; }
-                set { _ext = value; }
-            }
-
-            public string Size
-            {
-                get { return _size; }
-                set { _size = value; }
-            }
-
-            public DateTime Date
-            {
-                get { return _date; }
-                set { _date = value; }
-            }
-
-            public string Imagepath
-            {
-                get { return _imagepath; }
-                set { _imagepath = value; }
-            }
-
-            public EntryType Type
-            {
-                get { return _type; }
-                set { _type = value; }
-            }
-
-            public string Fullpath
-            {
-                get { return _fullpath; }
-                set { _fullpath = value; }
-            }
-        }
-
-        private void drives_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Console.WriteLine("kke");
-            Console.WriteLine(2+3);
+            public string Name { get => _name; set => _name = value; }
+            public string Fullpath { get => _fullpath; set => _fullpath = value; }
+            public string Ext { get => _ext; set => _ext = value; }
+            public string Size { get => _size; set => _size = value; }
+            public DateTime Date { get => _date; set => _date = value; }
+            public EntryType Type { get => _type; set => _type = value; }
         }
     }
 }
