@@ -47,6 +47,15 @@ namespace WpfApplication2
         {
             UpdateListView(e.AddedItems[0].ToString());
         }
+        private void DirecrotyEntry_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DirectoryEntry selectedItem = (DirectoryEntry)listView1.SelectedItem;
+            if (selectedItem.isDirectory)
+            {
+                UpdateListView(selectedItem.Fullpath);
+            }
+        }
+
         private void UpdateListView(string path)
         {
             entries.Clear();
@@ -93,6 +102,7 @@ namespace WpfApplication2
                 Size = size;
                 Date = date;
             }
+            public bool isDirectory { get => new FileInfo(Fullpath).Attributes.HasFlag(FileAttributes.Directory); }
 
             public string Name { get => _name; set => _name = value; }
             public string Fullpath { get => _fullpath; set => _fullpath = value; }

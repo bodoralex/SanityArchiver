@@ -14,7 +14,7 @@
             </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style>
-                    <!--<EventSetter Event="ListViewItem.MouseDoubleClick" Handler="listViewItem_MouseDoubleClick"/>-->
+                    <EventSetter Event="ListViewItem.MouseDoubleClick" Handler="DirecrotyEntry_DoubleClick"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
