@@ -24,7 +24,7 @@ namespace WpfApplication2
     public partial class Window1 : Window
     {
         ObservableCollection<DirectoryEntry> entries = new ObservableCollection<DirectoryEntry>();
-        string[] driveLetters = Directory.GetLogicalDrives();
+        string[] driveLetters;
 
         public Window1()
         {
@@ -45,23 +45,23 @@ namespace WpfApplication2
 
         private void drives_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            UpdateListView(e.AddedItems[0].ToString());
+        }
+        private void UpdateListView(string path)
+        {
             entries.Clear();
-            string driveLetter = e.AddedItems[0].ToString();
-            if (!string.IsNullOrEmpty(driveLetter))
+            foreach (string entry in Directory.GetFileSystemEntries(path))
             {
-                foreach (var entry in Directory.GetFileSystemEntries(driveLetter))
-                {
-                    FileInfo file = new FileInfo(entry);
-                    bool isDirectory = file.Attributes.HasFlag(FileAttributes.Directory);
-  
-                    DirectoryEntry directoryEntry = new DirectoryEntry(file.Name, file.FullName,
-                        isDirectory ? "dir" : file.Extension, isDirectory ? "" : file.Length / 1024 / 1024 + " MB",
-                        file.LastAccessTimeUtc, isDirectory ? EntryType.Dir : EntryType.File);
+                FileInfo file = new FileInfo(entry);
+                bool isDirectory = file.Attributes.HasFlag(FileAttributes.Directory);
 
-                    entries.Add(directoryEntry);
-                }
-                listView1.DataContext = entries;
+                DirectoryEntry directoryEntry = new DirectoryEntry(file.Name, file.FullName,
+                    isDirectory ? "dir" : file.Extension, isDirectory ? "" : file.Length / 1024 / 1024 + " MB",
+                    file.LastAccessTimeUtc, isDirectory ? EntryType.Dir : EntryType.File);
+
+                entries.Add(directoryEntry);
             }
+            listView1.DataContext = entries;
         }
 
         public enum EntryType

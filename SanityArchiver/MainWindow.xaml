@@ -6,15 +6,7 @@
         <ListView Margin="10,8,0,10" Name="listView1" HorizontalAlignment="Left" Width="590" BorderBrush="Black" ItemsSource="{Binding}" >
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="Auto">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Name}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="Auto"/>
                     <GridViewColumn Header="Ext" DisplayMemberBinding="{Binding Ext}" Width="Auto"/>
                     <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Size}" Width="Auto"/>
                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
