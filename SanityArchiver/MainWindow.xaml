@@ -3,11 +3,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Window1" Height="474" Width="817.8">
     <Grid Margin="0,10,3.8,0">
-        <ListView Margin="10,8,0,10" Name="listView1" HorizontalAlignment="Left" Width="590" BorderBrush="Black" ItemsSource="{Binding}" >
+        <ListView Margin="10,24,0,70" Name="listView1" HorizontalAlignment="Left" Width="590" BorderBrush="Black" ItemsSource="{Binding}" >
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="Auto"/>
-                    <GridViewColumn Header="Ext" DisplayMemberBinding="{Binding Ext}" Width="Auto"/>
+                    <GridViewColumn Header="Ext" DisplayMemberBinding="{Binding Ext}" Width="50.0"/>
                     <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Size}" Width="Auto"/>
                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="Auto"/>
                 </GridView>
@@ -19,5 +19,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <ComboBox Name="drives" HorizontalAlignment="Left" Margin="656,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="drives_SelectionChanged" />
+        <Button Content="Back" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="47" Click="BackButton_Click" Name="BackButton"/>
+        <TextBox Name="pathTextBox" HorizontalAlignment="Left" Height="18" Margin="71,1,0,0" TextWrapping="Wrap" Text="PÉKFASZ" VerticalAlignment="Top" Width="529"/>
     </Grid>
 </Window>

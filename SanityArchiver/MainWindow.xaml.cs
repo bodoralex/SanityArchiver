@@ -52,7 +52,9 @@ namespace WpfApplication2
             DirectoryEntry selectedItem = (DirectoryEntry)listView1.SelectedItem;
             if (selectedItem.isDirectory)
             {
-                UpdateListView(selectedItem.Fullpath);
+                string fullpath = selectedItem.Fullpath;
+                UpdateListView(fullpath);
+                pathTextBox.Text = fullpath;
             }
         }
 
@@ -110,6 +112,15 @@ namespace WpfApplication2
             public string Size { get => _size; set => _size = value; }
             public DateTime Date { get => _date; set => _date = value; }
             public EntryType Type { get => _type; set => _type = value; }
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            DirectoryInfo parentDirectory = new DirectoryInfo(pathTextBox.Text).Parent;
+            if (parentDirectory == null) return;
+            string parentDirectoryPath = parentDirectory.FullName;
+            pathTextBox.Text = parentDirectoryPath;
+            UpdateListView(parentDirectoryPath);
         }
     }
 }
