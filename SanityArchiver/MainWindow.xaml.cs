@@ -27,6 +27,7 @@ namespace WpfApplication2
         ObservableCollection<DirectoryEntry> entries = new ObservableCollection<DirectoryEntry>();
         ObservableString currentPath = new ObservableString();
         string[] driveLetters;
+        DirectoryEntry selectedFile;
 
         public Window1()
         {
@@ -48,8 +49,15 @@ namespace WpfApplication2
 
         private void drives_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateListView(e.AddedItems[0].ToString());
+            UpdateListView(e.AddedItems[0]?.ToString());
         }
+
+        private void DirectoryEntry_SingleClick(object sender, SelectionChangedEventArgs e)
+        {
+            selectedFile = (DirectoryEntry)listView1.SelectedItem ?? selectedFile;
+            SelectedFileLabel.Content = selectedFile.Name;
+        }
+
         private void DirecrotyEntry_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             DirectoryEntry selectedItem = (DirectoryEntry)listView1.SelectedItem;
@@ -69,9 +77,7 @@ namespace WpfApplication2
                 FileInfo file = new FileInfo(entry);
                 bool isDirectory = file.Attributes.HasFlag(FileAttributes.Directory);
 
-                DirectoryEntry directoryEntry = new DirectoryEntry(file.Name, file.FullName,
-                    isDirectory ? "dir" : file.Extension, isDirectory ? "" : file.Length / 1024 / 1024 + " MB",
-                    file.LastAccessTimeUtc, isDirectory ? EntryType.Dir : EntryType.File);
+                DirectoryEntry directoryEntry = new DirectoryEntry(entry);
 
                 entries.Add(directoryEntry);
             }
@@ -112,6 +118,19 @@ namespace WpfApplication2
                 Size = size;
                 Date = date;
             }
+            public DirectoryEntry(string path)
+            {
+                FileInfo file = new FileInfo(path);
+                bool isDirectory = file.Attributes.HasFlag(FileAttributes.Directory);
+
+                Name = file.Name;
+                Fullpath = file.FullName;
+                Ext = isDirectory ? "dir" : file.Extension;
+                Size = isDirectory ? "" : file.Length / 1024 / 1024 + " MB";
+                Date = file.LastAccessTimeUtc;
+                Type = isDirectory ? EntryType.Dir : EntryType.File;
+            }
+
             public bool isDirectory { get => new FileInfo(Fullpath).Attributes.HasFlag(FileAttributes.Directory); }
 
             public string Name { get => _name; set => _name = value; }

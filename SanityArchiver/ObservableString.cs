@@ -24,7 +24,7 @@ namespace SanityArchiver
             get { return content; }
             set
             {
-                onStringChange?.Invoke(this, value); //maybe null-checks needed
+                onStringChange?.Invoke(this, value);
                 content = value;
             }
         }
