@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SanityArchiver;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -24,12 +25,14 @@ namespace WpfApplication2
     public partial class Window1 : Window
     {
         ObservableCollection<DirectoryEntry> entries = new ObservableCollection<DirectoryEntry>();
+        ObservableString currentPath = new ObservableString();
         string[] driveLetters;
 
         public Window1()
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(Window1_Loaded);
+            currentPath.onStringChange += OnStringChange;
         }
 
         void Window1_Loaded(object sender, RoutedEventArgs e)
@@ -54,7 +57,7 @@ namespace WpfApplication2
             {
                 string fullpath = selectedItem.Fullpath;
                 UpdateListView(fullpath);
-                pathTextBox.Text = fullpath;
+                currentPath.Content = fullpath;
             }
         }
 
@@ -73,6 +76,11 @@ namespace WpfApplication2
                 entries.Add(directoryEntry);
             }
             listView1.DataContext = entries;
+        }
+
+        protected void OnStringChange(ObservableString sender, string args)
+        {
+            pathTextBox.Text = args;
         }
 
         public enum EntryType
@@ -116,10 +124,10 @@ namespace WpfApplication2
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo parentDirectory = new DirectoryInfo(pathTextBox.Text).Parent;
+            DirectoryInfo parentDirectory = new DirectoryInfo(currentPath.Content).Parent;
             if (parentDirectory == null) return;
             string parentDirectoryPath = parentDirectory.FullName;
-            pathTextBox.Text = parentDirectoryPath;
+            currentPath.Content = parentDirectoryPath;
             UpdateListView(parentDirectoryPath);
         }
     }
